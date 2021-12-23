@@ -5,6 +5,9 @@
 #include <iostream>
 #include <fstream>
 
+#define START_LENGTH 2                                  // Начальная длина певрого массива
+#define FACTOR 2                                        // Множитель каждого следующего массива
+
 template<typename T>
 struct Node {
   T **field;

@@ -75,7 +75,7 @@ void List<T>::remove(unsigned int pos) {
 template<typename T>
 void List<T>::add(T *_field) {
   if (is_empty()) {
-    head = new Node<T>(_field, 2);
+    head = new Node<T>(_field, START_LENGTH);
     size++;
   } else {
     Node<T> *tmp = head;
@@ -85,7 +85,7 @@ void List<T>::add(T *_field) {
       tmp = tmp->next;
     }
     if (tmp == nullptr) {
-      tmp = new Node<T>(_field, tmp2->length * 2);
+      tmp = new Node<T>(_field, tmp2->length * FACTOR);
       tmp2->next = tmp;
       size++;
     } else {
@@ -98,13 +98,13 @@ void List<T>::add(T *_field) {
 template<typename T>
 void List<T>::add_array() {
   if (is_empty()) {
-    head = new Node<T>(2);
+    head = new Node<T>(START_LENGTH);
   } else {
     Node<T> *tmp = head;
     while (tmp->next != nullptr) {
       tmp = tmp->next;
     }
-    tmp->next = new Node<T>(tmp->length * 2);
+    tmp->next = new Node<T>(tmp->length * FACTOR);
   }
 }
 
@@ -176,6 +176,29 @@ void List<T>::load_to_bin(std::fstream &out) {
         out.write((char *) tmp->field[j], sizeof(T));
       }
       tmp = tmp->next;
+    }
+  }
+}
+
+template<typename T>
+void List<T>::load_from_bin(std::fstream &in) {
+  if (in.is_open()) {
+    while (head) {
+      remove(0);
+    }
+    Node<T> *tmp;
+    if (in.peek() != EOF) {
+      head = tmp = new Node<T>;
+      size = 1;
+    }
+    T *tmp2 = new T;
+    unsigned int sz;
+    while (in.peek() != EOF) {
+      in.read((char *) &sz, sizeof(unsigned int));
+      if (sz) {
+        in.read((char *) tmp, sizeof(unsigned int));
+
+      }
     }
   }
 }
