@@ -135,6 +135,11 @@ void List<T>::insert_array(T *_field, unsigned int pos) {
 }
 
 template<typename T>
+void List<T>::insert_in_array(T *_field, unsigned int pos) {
+
+}
+
+template<typename T>
 T *List<T>::get(unsigned int list_num, unsigned int arr_pos) {
   if (is_empty()) {
     // TODO
@@ -169,6 +174,8 @@ std::ostream &operator<<(std::ostream &out, List<V> &list) {
   }
   return out;
 }
+
+
 
 #endif // COURSEWORK_SRC_LIST_INL_
 

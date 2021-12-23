@@ -10,7 +10,8 @@ TEST(lol, lol) {
     _num++;
     p.add(&_num);
   }
-
   std::cout << p;
+
+
 
 }
