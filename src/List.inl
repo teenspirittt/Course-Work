@@ -56,11 +56,6 @@ bool List<T>::is_empty() {
 }
 
 template<typename T>
-void List<T>::remove_from_array(unsigned int pos) {
-
-}
-
-template<typename T>
 void List<T>::remove(unsigned int pos) {
   if (pos == 0) {
     Node<T> *tmp1 = head->next;
@@ -76,6 +71,7 @@ void List<T>::remove(unsigned int pos) {
   }
   size--;
 }
+
 template<typename T>
 void List<T>::add(T *_field) {
   if (is_empty()) {
@@ -135,11 +131,6 @@ void List<T>::insert_array(T *_field, unsigned int pos) {
 }
 
 template<typename T>
-void List<T>::insert_in_array(T *_field, unsigned int pos) {
-
-}
-
-template<typename T>
 T *List<T>::get(unsigned int list_num, unsigned int arr_pos) {
   if (is_empty()) {
     // TODO
@@ -175,22 +166,21 @@ std::ostream &operator<<(std::ostream &out, List<V> &list) {
   return out;
 }
 
-
+template<typename T>
+void List<T>::load_to_bin(std::fstream &out) {
+  if (out.is_open()) {
+    Node<T> *tmp = head;
+    for (int i = 0; i < size; ++i) {
+      out.write((char *) &(tmp->c_size), sizeof(unsigned int));
+      for (int j = 0; j < tmp->c_size; ++j) {
+        out.write((char *) tmp->field[j], sizeof(T));
+      }
+      tmp = tmp->next;
+    }
+  }
+}
 
 #endif // COURSEWORK_SRC_LIST_INL_
-
-
-/*template<typename T>
-void List<T>::show() {
-  if (is_empty())
-    return;
-  Node<T> *p = first;
-  while (p) {
-    std::cout << *(p->field) << " ";
-    p = p->next;
-  }
-  std::cout << std::endl;
-}*/
 
 
 /*

@@ -31,10 +31,14 @@ class List {
   void remove(unsigned int pos);                        // Удаление массива полностью как ноду списка
   void remove_from_array(unsigned int pos);             // "Прицельное" удаление
   int get_size();                                       // Вывод списка
+  void sort();
+  void balance();
+  void load_from_bin(std::fstream &in);
+  void load_to_bin(std::fstream &out);
   T *get(unsigned int list_num, unsigned int arr_pos);
   // TODO
   //Node<T> *operator[](const int d);
-  bool is_empty();
+
   template<class V>
   friend std::istream &operator>>(std::istream &in, List<V> &list);
   template<class V>
@@ -42,7 +46,7 @@ class List {
 
  private:
   Node<T> *head;
-  //Node<T **> *last;
+  bool is_empty();
   unsigned int size;                                 // длина списка
 };
 
