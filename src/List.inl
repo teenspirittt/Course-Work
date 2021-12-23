@@ -1,36 +1,151 @@
-#ifndef MATRIXES_SRC_UNILISTS_INL_
-#define MATRIXES_SRC_UNILISTS_INL_
+#ifndef COURSEWORK_SRC_LIST_INL_
+#define COURSEWORK_SRC_LIST_INL_
 
 #include <iostream>
 #include "../include/List.h"
 
 template<typename T>
-void List<T>::push_back(T *_field) {
-  Node *p = new Node(_field);
-  if (is_empty()) {
-    first = p;
-    last = p;
-    return;
+Node<T>::Node(T *_field, unsigned int _length) {
+  field = new T *[_length];
+  next = nullptr;
+  length = _length;
+  field[0] = new T(*_field);
+  c_size = 1;
+}
+
+template<typename T>
+Node<T>::Node(unsigned int _length) {
+  field = new T *[_length];
+  next = nullptr;
+  length = _length;
+  c_size = 1;
+}
+
+template<typename T>
+Node<T>::~Node() {
+  for (int i = 0; i < c_size; ++i) {
+    delete field[i];
   }
-  last->next = p;
-  last = p;
-  size++;
+  delete[] field;
 }
 
 template<typename T>
-Node *List<T>::find(T *_field) {
-  Node *p = first;
-  while (p && p->field != _field)
+List<T>::List() {
+  head = nullptr;
+  size = 0;
+}
+
+template<typename T>
+List<T>::~List() {
+  while (size != 0) {
+    Node<T> *tmp = head->next;
+    delete head;
+    head = tmp;
+    size--;
+  }
+}
+
+template<typename T>
+int List<T>::get_size() {
+  return size;
+}
+
+template<typename T>
+bool List<T>::is_empty() {
+  return head == nullptr;
+}
+
+template<typename T>
+void List<T>::remove_from_array(unsigned int pos) {
+
+}
+
+template<typename T>
+void List<T>::remove(unsigned int pos) {
+  if (pos == 0) {
+    Node<T> *tmp1 = head->next;
+    delete head;
+    head = tmp1;
+  } else {
+    Node<T> *tmp1 = head;
+    for (int i = 0; i < pos - 1; ++i)
+      tmp1 = tmp1->next;
+    Node<T> *tmp2 = tmp1->next;
+    tmp1->next = tmp1->next->next;
+    delete tmp2;
+  }
+  size--;
+}
+template<typename T>
+void List<T>::add(T *_field) {
+  if (is_empty()) {
+    head = new Node<T>(_field, 2);
+    size++;
+  } else {
+    Node<T> *tmp = head;
+    Node<T> *tmp2;
+    while (tmp != nullptr && tmp->c_size == tmp->length) {
+      tmp2 = tmp;
+      tmp = tmp->next;
+    }
+    if (tmp == nullptr) {
+      tmp = new Node<T>(_field, tmp2->length * 2);
+      tmp2->next = tmp;
+      size++;
+    } else {
+      tmp->field[tmp->c_size] = new T(*_field);
+      tmp->c_size++;
+    }
+  }
+}
+
+template<typename T>
+void List<T>::add_array() {
+  if (is_empty()) {
+    head = new Node<T>(2);
+  } else {
+    Node<T> *tmp = head;
+    while (tmp->next != nullptr) {
+      tmp = tmp->next;
+    }
+    tmp->next = new Node<T>(tmp->length * 2);
+  }
+}
+
+template<typename T>
+T *List<T>::get(unsigned int list_num, unsigned int arr_pos) {
+  if (is_empty()) {
+    std::cout << "AAAAAAAAAAAAAAAAA!!!\n";
+  }
+  Node<T> *tmp = head;
+  for (int i = 0; i < list_num; ++i) {
+    tmp = tmp->next;
+  }
+  return tmp->field[arr_pos];
+}
+
+#endif // COURSEWORK_SRC_LIST_INL_
+
+
+/*template<typename T>
+void List<T>::show() {
+  if (is_empty())
+    return;
+  Node<T> *p = first;
+  while (p) {
+    std::cout << *(p->field) << " ";
     p = p->next;
+  }
+  std::cout << std::endl;
+}*/
 
-  return (p && p->field == _field) ? p : nullptr;
-}
 
+/*
 template<typename T>
-Node &List<T>::operator[](const int d) {
+Node<T> *List<T>::operator[](const int d) {
   if (is_empty())
     return nullptr;
-  Node *p = first;
+  Node<T> *p = head;
   for (int i = 0; i < d; ++i) {
     p = p->next;
     if (!p)
@@ -38,31 +153,4 @@ Node &List<T>::operator[](const int d) {
   }
   return p;
 }
-template<typename T>
-void List<T>::pop_back() {
-  if (is_empty()) return;
-  if (first == last) {
-    remove_first();
-    return;
-  }
-  Node *p = first;
-  while (p->next != last) p = p->next;
-  p->next = nullptr;
-  delete last;
-  last = p;
-  size--;
-}
-template<typename T>
-void List<T>::pop_front() {
-  if (is_empty()) return;
-  Node *p = first;
-  first = p->next;
-  delete p;
-  size--;
-}
-template<typename T>
-void List<T>::pop(uint index) {
-
-}
-
-#endif // MATRIXES_SRC_UNILISTS_INL_
+*/

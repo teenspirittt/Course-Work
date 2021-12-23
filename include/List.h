@@ -3,30 +3,42 @@
 
 #include "Node.h"
 
+
+template<typename T>
+struct Node {
+  T **field;
+  Node *next;
+  unsigned int length;                          //максималььная  длина массива
+  unsigned int c_size;                          // current длина массива
+  explicit Node(unsigned int _length);
+  Node(T *_field, unsigned int _length);
+  ~Node();
+};
+
 template<typename T>
 class List {
  public:
-  List()
-      : first(nullptr), last(nullptr), size(0) {};
+  List();
+  // List(T *_field);
+  // List(T &_field);
   ~List();
-  void push_front(T *field);
-  void push(T *a, uint pos);
-  void push_back(T *_field);
-  void pop_front();
-  void pop(uint index);
-  void pop_back();
-  Node *find(T *_field);
-  void pop();
-  void pop(uint pos);
-  void show();
-  int count();
-  Node &operator[](const int d);
-  bool is_empty() { return first == nullptr }
- private:
 
-  Node *first;
-  Node *last;
-  uint size;
+  void insert_in_array(T *_field, unsigned int pos); // Вставка по позиции в массив
+  void add(T *_field);                              // Добавление нового элемента в свободное место
+  void add_array();                                 // Добавление ноды
+  void insert();
+  void remove(unsigned int pos);                     // Удаление массива полностью как ноду списка
+  void remove_from_array(unsigned int pos);          // "Прицельное" удаление
+  void show();                                       // Вывод списка
+  int get_size();
+  T *get(unsigned int list_num, unsigned int arr_pos);
+  // TODO
+  //Node<T> *operator[](const int d);
+  bool is_empty();
+ private:
+  Node<T> *head;
+  //Node<T **> *last;
+  unsigned int size;                               // длина списка
 };
 
 #include "../src/List.inl"
