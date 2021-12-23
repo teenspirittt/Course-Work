@@ -2,6 +2,8 @@
 #define COURSEWORK_INCLUDE_LIST_H_
 
 #include "Node.h"
+#include <iostream>
+#include <fstream>
 
 
 template<typename T>
@@ -24,9 +26,9 @@ class List {
   ~List();
 
   void insert_in_array(T *_field, unsigned int pos); // Вставка по позиции в массив
-  void add(T *_field);                              // Добавление нового элемента в свободное место
-  void add_array();                                 // Добавление ноды
-  void insert();
+  void add(T *_field);                               // Добавление нового элемента в свободное место
+  void add_array();                                  // Добавление ноды
+  void insert_array(T *_field, unsigned int pos);
   void remove(unsigned int pos);                     // Удаление массива полностью как ноду списка
   void remove_from_array(unsigned int pos);          // "Прицельное" удаление
   void show();                                       // Вывод списка
@@ -35,10 +37,15 @@ class List {
   // TODO
   //Node<T> *operator[](const int d);
   bool is_empty();
+  template<class V>
+  friend std::istream &operator >> (std::istream &in, List<V> &list);
+  template<class V>
+  friend std::ostream &operator << (std::ostream &out, List<V> &list);
+
  private:
   Node<T> *head;
   //Node<T **> *last;
-  unsigned int size;                               // длина списка
+  unsigned int size;                                 // длина списка
 };
 
 #include "../src/List.inl"

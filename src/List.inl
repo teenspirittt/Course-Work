@@ -113,8 +113,31 @@ void List<T>::add_array() {
 }
 
 template<typename T>
+void List<T>::insert_array(T *_field, unsigned int pos) {
+  if (pos > size) {
+    // TODO
+    std::cout << "AAAAAAAAAAAAAAAAAA!";
+  }
+  if (pos == 0) {
+    Node<T> *tmp = head;
+    head = new Node<T>;
+    head->next = tmp;
+  } else {
+    Node<T> *tmp = head;
+    for (int i = 0; i < pos; ++i) {
+      tmp = tmp->next;
+    }
+    Node<T> *tmp2 = tmp->next;
+    tmp->next = new Node<T>;
+    tmp->next->next = tmp2;
+  }
+  size++;
+}
+
+template<typename T>
 T *List<T>::get(unsigned int list_num, unsigned int arr_pos) {
   if (is_empty()) {
+    // TODO
     std::cout << "AAAAAAAAAAAAAAAAA!!!\n";
   }
   Node<T> *tmp = head;
@@ -122,6 +145,29 @@ T *List<T>::get(unsigned int list_num, unsigned int arr_pos) {
     tmp = tmp->next;
   }
   return tmp->field[arr_pos];
+}
+
+template<class V>
+std::istream &operator>>(std::istream &in, List<V> &list) {
+  V *a = new V;
+  in >> *a;
+  list.add(a);
+  delete a;
+  return in;
+}
+
+template<class V>
+std::ostream &operator<<(std::ostream &out, List<V> &list) {
+  Node<V> *tmp = list.head;
+  for (int i = 0; i < list.size; ++i) {
+    for (int j = 0; j < tmp->c_size; ++j) {
+      out << *(tmp->field[j]) << " ";
+    }
+    tmp = tmp->next;
+    out << "\n";
+
+  }
+  return out;
 }
 
 #endif // COURSEWORK_SRC_LIST_INL_

@@ -6,19 +6,11 @@ TEST(lol, lol) {
   int _num = 5;
   int *num = &_num;
 
-  (*num)++;
-  p.add(num);
-  (*num)++;
-  p.add(num);
-  (*num)++;
-  p.add(num);
-  (*num)++;
-  p.add(num);
-  p.remove();
+  for (int i = 0; i < 10000; ++i) {
+    _num++;
+    p.add(&_num);
+  }
 
-  std::cout << *(p.get(0, 0)) << std::endl;
-  std::cout << *(p.get(0, 1)) << std::endl;
-  std::cout << *(p.get(1, 0)) << std::endl;
-  std::cout << *(p.get(1, 1)) << std::endl;
+  std::cout << p;
 
 }
