@@ -18,7 +18,7 @@ Node<T>::Node(unsigned int _length) {
   field = new T *[_length];
   next = nullptr;
   length = _length;
-  c_size = 1;
+  c_size = 0;
 }
 
 template<typename T>
@@ -109,22 +109,22 @@ void List<T>::add_array() {
 }
 
 template<typename T>
-void List<T>::insert_array(T *_field, unsigned int pos) {
+void List<T>::insert_array(unsigned int pos) {
   if (pos > size) {
     // TODO
     std::cout << "AAAAAAAAAAAAAAAAAA!";
   }
   if (pos == 0) {
     Node<T> *tmp = head;
-    head = new Node<T>;
+    head = new Node<T>(START_LENGTH);
     head->next = tmp;
   } else {
     Node<T> *tmp = head;
-    for (int i = 0; i < pos; ++i) {
+    for (int i = 0; i < pos - 1; ++i) {
       tmp = tmp->next;
     }
     Node<T> *tmp2 = tmp->next;
-    tmp->next = new Node<T>;
+    tmp->next = new Node<T>(tmp->length * FACTOR);
     tmp->next->next = tmp2;
   }
   size++;
@@ -134,7 +134,7 @@ template<typename T>
 T *List<T>::get(unsigned int list_num, unsigned int arr_pos) {
   if (is_empty()) {
     // TODO
-    std::cout << "AAAAAAAAAAAAAAAAA!!!\n";
+    std::cout << "AAAAAAAAAAAAAAA!!!\n";
   }
   Node<T> *tmp = head;
   for (int i = 0; i < list_num; ++i) {
@@ -161,7 +161,6 @@ std::ostream &operator<<(std::ostream &out, List<V> &list) {
     }
     tmp = tmp->next;
     out << "\n";
-
   }
   return out;
 }
@@ -179,6 +178,7 @@ void List<T>::load_to_bin(std::fstream &out) {
     }
   }
 }
+
 
 /*template<typename T>
 void List<T>::load_from_bin(std::fstream &in) {

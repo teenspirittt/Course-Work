@@ -4,5 +4,6 @@
 #include "List.h"
 
 void show_menu();
+void menu(List<std::string> &a);
 
 #endif //COURSEWORK_INCLUDE_MENU_H_

@@ -31,7 +31,7 @@ class List {
   void insert_in_array(T *_field, unsigned int pos);    // Вставка по позиции в массив
   void add(T *_field);                                  // Добавление нового элемента в свободное место
   void add_array();                                     // Добавление ноды
-  void insert_array(T *_field, unsigned int pos);       // Вставка массива по позиции
+  void insert_array( unsigned int pos);                 // Вставка массива по позиции
   void remove(unsigned int pos);                        // Удаление массива полностью как ноду списка
   void remove_from_array(unsigned int pos);             // "Прицельное" удаление
   int get_size();                                       // Вывод списка
