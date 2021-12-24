@@ -1,8 +1,9 @@
 #include "gtest/gtest.h"
 #include "../include/List.h"
+#include "../include/menu.h"
 
 TEST(lol, lol) {
-  List<int> p;
+ /* List<int> p;
   int _num = 5;
   int *num = &_num;
 
@@ -14,6 +15,6 @@ TEST(lol, lol) {
   std::fstream f;
   f.open("../src/materials/data.bin", std::ios::binary | std::ios::out);
   p.load_to_bin(f);
-  f.close();
-
+  f.close();*/
+  show_menu();
 }

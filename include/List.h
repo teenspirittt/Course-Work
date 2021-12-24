@@ -1,9 +1,10 @@
 #ifndef COURSEWORK_INCLUDE_LIST_H_
 #define COURSEWORK_INCLUDE_LIST_H_
 
-#include "Node.h"
 #include <iostream>
 #include <fstream>
+#include <iostream>
+#include <string>
 
 #define START_LENGTH 2                                  // Начальная длина певрого массива
 #define FACTOR 2                                        // Множитель каждого следующего массива

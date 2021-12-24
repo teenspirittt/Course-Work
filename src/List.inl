@@ -1,7 +1,7 @@
 #ifndef COURSEWORK_SRC_LIST_INL_
 #define COURSEWORK_SRC_LIST_INL_
 
-#include <iostream>
+#include <string>
 #include "../include/List.h"
 
 template<typename T>
@@ -180,7 +180,7 @@ void List<T>::load_to_bin(std::fstream &out) {
   }
 }
 
-template<typename T>
+/*template<typename T>
 void List<T>::load_from_bin(std::fstream &in) {
   if (in.is_open()) {
     while (head) {
@@ -197,11 +197,35 @@ void List<T>::load_from_bin(std::fstream &in) {
       in.read((char *) &sz, sizeof(unsigned int));
       if (sz) {
         in.read((char *) tmp, sizeof(unsigned int));
-
+        char *tmp_c = new char[sz + 1];
+        in.read(tmp_c, sz);
+        tmp_c[sz] = 0;
+        std::string *str = new std::string(tmp_c);
+        tmp = new Node<std::string>(str,2);
+        tmp->c_size++;
+        delete str;
+        delete[] str;
+      }
+      for (int i = 0; i < sz; ++i) {
+        in.read((char *) &sz, sizeof(unsigned int));
+        char *tmp_c = new char[sz + 1];
+        in.read(tmp_c, sz);
+        tmp[sz] = 0;
+        std::string *str = new std::string(tmp);
+        tmp->next = new Node<str>(str,2);
+        tmp = tmp->next;
+        tmp->c_size++;
+        delete str;
+        delete[] str;
+      }
+      if (in.peek() != EOF) {
+        tmp->next = new Node<str>;
+        tmp = tmp->next;
+        size++;
       }
     }
   }
-}
+}*/
 
 #endif // COURSEWORK_SRC_LIST_INL_
 
