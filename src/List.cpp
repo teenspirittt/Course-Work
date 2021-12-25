@@ -1,6 +1,3 @@
-#ifndef COURSEWORK_SRC_LIST_INL_
-#define COURSEWORK_SRC_LIST_INL_
-
 #include <string>
 #include "../include/List.h"
 
@@ -112,7 +109,7 @@ template<typename T>
 void List<T>::insert_array(unsigned int pos) {
   if (pos > size) {
     // TODO
-    std::cout << "AAAAAAAAAAAAAAAAAA!";
+    cout << "AAAAAAAAAAAAAAAAAA!";
   }
   if (pos == 0) {
     Node<T> *tmp = head;
@@ -130,11 +127,20 @@ void List<T>::insert_array(unsigned int pos) {
   size++;
 }
 
+/*template<typename T>
+void List<T>::insert_in_array(T *_field, unsigned int pos) {
+  Node<T> tmp =
+  if (pos == 0) {
+
+  }
+
+}*/
+
 template<typename T>
 T *List<T>::get(unsigned int list_num, unsigned int arr_pos) {
   if (is_empty()) {
     // TODO
-    std::cout << "AAAAAAAAAAAAAAA!!!\n";
+    cout << "AAAAAAAAAAAAAAA!!!\n";
   }
   Node<T> *tmp = head;
   for (int i = 0; i < list_num; ++i) {
@@ -144,7 +150,7 @@ T *List<T>::get(unsigned int list_num, unsigned int arr_pos) {
 }
 
 template<class V>
-std::istream &operator>>(std::istream &in, List<V> &list) {
+istream &operator>>(istream &in, List<V> &list) {
   V *a = new V;
   in >> *a;
   list.add(a);
@@ -153,7 +159,7 @@ std::istream &operator>>(std::istream &in, List<V> &list) {
 }
 
 template<class V>
-std::ostream &operator<<(std::ostream &out, List<V> &list) {
+ostream &operator<<(ostream &out, List<V> &list) {
   Node<V> *tmp = list.head;
   for (int i = 0; i < list.size; ++i) {
     for (int j = 0; j < tmp->c_size; ++j) {
@@ -166,7 +172,7 @@ std::ostream &operator<<(std::ostream &out, List<V> &list) {
 }
 
 template<typename T>
-void List<T>::load_to_bin(std::fstream &out) {
+void List<T>::load_to_bin(fstream &out) {
   if (out.is_open()) {
     Node<T> *tmp = head;
     for (int i = 0; i < size; ++i) {
@@ -179,68 +185,67 @@ void List<T>::load_to_bin(std::fstream &out) {
   }
 }
 
-
-/*template<typename T>
-void List<T>::load_from_bin(std::fstream &in) {
-  if (in.is_open()) {
-    while (head) {
-      remove(0);
-    }
-    Node<T> *tmp;
-    if (in.peek() != EOF) {
-      head = tmp = new Node<T>;
-      size = 1;
-    }
-    T *tmp2 = new T;
-    unsigned int sz;
-    while (in.peek() != EOF) {
-      in.read((char *) &sz, sizeof(unsigned int));
-      if (sz) {
-        in.read((char *) tmp, sizeof(unsigned int));
-        char *tmp_c = new char[sz + 1];
-        in.read(tmp_c, sz);
-        tmp_c[sz] = 0;
-        std::string *str = new std::string(tmp_c);
-        tmp = new Node<std::string>(str,2);
-        tmp->c_size++;
-        delete str;
-        delete[] str;
+template<>
+void List<string>::load_to_bin(fstream &out) {
+  if (out.is_open()) {
+    Node<string> *tmp = head;
+    for (int i = 0; i < size; ++i) {
+      out.write((char *) &(tmp->c_size), sizeof(unsigned int));
+      for (int j = 0; j < tmp->c_size; ++j) {
+        out.write((char *) tmp->field[j], sizeof(string));
       }
-      for (int i = 0; i < sz; ++i) {
-        in.read((char *) &sz, sizeof(unsigned int));
-        char *tmp_c = new char[sz + 1];
-        in.read(tmp_c, sz);
-        tmp[sz] = 0;
-        std::string *str = new std::string(tmp);
-        tmp->next = new Node<str>(str,2);
-        tmp = tmp->next;
-        tmp->c_size++;
-        delete str;
-        delete[] str;
-      }
-      if (in.peek() != EOF) {
-        tmp->next = new Node<str>;
-        tmp = tmp->next;
-        size++;
-      }
+      tmp = tmp->next;
     }
   }
-}*/
-
-#endif // COURSEWORK_SRC_LIST_INL_
-
-
-/*
-template<typename T>
-Node<T> *List<T>::operator[](const int d) {
-  if (is_empty())
-    return nullptr;
-  Node<T> *p = head;
-  for (int i = 0; i < d; ++i) {
-    p = p->next;
-    if (!p)
-      return nullptr;
-  }
-  return p;
 }
-*/
+
+template<typename T>
+void List<T>::load_from_bin(fstream &in) {
+  while (size != 0) {
+    Node<T> *tmp = head->next;
+    delete head;
+    head = tmp;
+    size--;
+  }
+  int sz;
+  Node<T> *tmp;
+  while (in.peek() != EOF) {
+    in.read((char *) &sz, sizeof(unsigned int));
+    tmp = new Node<T>(sz);
+    for (int i = 0; i < sz; ++i) {
+      tmp->field[i] = new T;
+      in.read((char *) &(tmp[i]), sizeof(unsigned int));
+      tmp->c_size++;
+    }
+    tmp->next = new Node<T>(tmp->length * FACTOR);
+    tmp = tmp->next;
+    size++;
+  }
+}
+
+template
+class List<int>;
+
+template
+class List<float>;
+
+template
+class List<double>;
+
+template
+class List<char>;
+
+template
+class List<unsigned int>;
+
+template
+class List<long>;
+
+template
+class List<long long>;
+
+template
+class List<short>;
+
+template
+class List<string>;

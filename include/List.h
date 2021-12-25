@@ -6,8 +6,16 @@
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 #define START_LENGTH 2                                  // Начальная длина певрого массива
 #define FACTOR 2                                        // Множитель каждого следующего массива
+
+// TODO
+//// Поменять название переменных и функций
+//// Сделать insert_in_arr(), remove_from_arr(), sort(), balance(), load_from_bin()
+//// Сделать настройки меню(Русский язык, man, info)
+//// Сделать пару тестов
 
 template<typename T>
 struct Node {
@@ -31,10 +39,10 @@ class List {
   void insert_in_array(T *_field, unsigned int pos);    // Вставка по позиции в массив
   void add(T *_field);                                  // Добавление нового элемента в свободное место
   void add_array();                                     // Добавление ноды
-  void insert_array( unsigned int pos);                 // Вставка массива по позиции
+  void insert_array(unsigned int pos);                 // Вставка массива по позиции
   void remove(unsigned int pos);                        // Удаление массива полностью как ноду списка
   void remove_from_array(unsigned int pos);             // "Прицельное" удаление
-  int get_size();                                       // Вывод списка
+  int get_size();                                       // Вывод размера списка
   void sort();
   void balance();
   void load_from_bin(std::fstream &in);
@@ -53,7 +61,5 @@ class List {
   bool is_empty();
   unsigned int size;                                 // длина списка
 };
-
-#include "../src/List.inl"
 
 #endif //COURSEWORK_INCLUDE_LIST_H_

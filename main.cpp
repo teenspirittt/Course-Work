@@ -17,6 +17,7 @@ int main() {
   // p.load_to_bin(f);
   // f.close();
   List<std::string> a;
+  List<int> b;
   menu(a);
   return 0;
 }
