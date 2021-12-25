@@ -1,4 +1,4 @@
-#include <string>
+
 #include "../include/List.h"
 
 template<typename T>
@@ -149,28 +149,6 @@ T *List<T>::get(unsigned int list_num, unsigned int arr_pos) {
   return tmp->field[arr_pos];
 }
 
-template<class V>
-istream &operator>>(istream &in, List<V> &list) {
-  V *a = new V;
-  in >> *a;
-  list.add(a);
-  delete a;
-  return in;
-}
-
-template<class V>
-ostream &operator<<(ostream &out, List<V> &list) {
-  Node<V> *tmp = list.head;
-  for (int i = 0; i < list.size; ++i) {
-    for (int j = 0; j < tmp->c_size; ++j) {
-      out << *(tmp->field[j]) << " ";
-    }
-    tmp = tmp->next;
-    out << "\n";
-  }
-  return out;
-}
-
 template<typename T>
 void List<T>::load_to_bin(fstream &out) {
   if (out.is_open()) {
@@ -192,7 +170,9 @@ void List<string>::load_to_bin(fstream &out) {
     for (int i = 0; i < size; ++i) {
       out.write((char *) &(tmp->c_size), sizeof(unsigned int));
       for (int j = 0; j < tmp->c_size; ++j) {
-        out.write((char *) tmp->field[j], sizeof(string));
+        unsigned int sz = tmp->field[j]->length();
+        out.write((char *) &sz, sizeof(unsigned int));
+        out.write((char *) tmp->field[j]->c_str(), sizeof(char) * sz);
       }
       tmp = tmp->next;
     }
@@ -218,6 +198,30 @@ void List<T>::load_from_bin(fstream &in) {
       tmp->c_size++;
     }
     tmp->next = new Node<T>(tmp->length * FACTOR);
+    tmp = tmp->next;
+    size++;
+  }
+}
+
+template<>
+void List<string>::load_from_bin(fstream &in) {
+  while (size != 0) {
+    Node<string> *tmp = head->next;
+    delete head;
+    head = tmp;
+    size--;
+  }
+  int sz;
+  Node<string> *tmp;
+  while (in.peek() != EOF) {
+    in.read((char *) &sz, sizeof(unsigned int));
+    tmp = new Node<string>(sz);
+    for (int i = 0; i < sz; ++i) {
+      tmp->field[i] = new string;
+      in.read((char *) &(tmp[i]), sizeof(unsigned int));
+      tmp->c_size++;
+    }
+    tmp->next = new Node<string>(tmp->length * FACTOR);
     tmp = tmp->next;
     size++;
   }

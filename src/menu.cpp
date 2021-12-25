@@ -63,7 +63,7 @@ void menu(List<string> &a) {
         break;
       case 8:system("cls");
         f.open("../src/materials/data.bin", std::ios::binary | std::ios::in);
-       // a.load_from_bin(f);
+        a.load_from_bin(f);
         f.close();
         break;
       case 9:system("cls");

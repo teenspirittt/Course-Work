@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <iostream>
 #include <string>
 
 using namespace std;
@@ -61,5 +60,27 @@ class List {
   bool is_empty();
   unsigned int size;                                 // длина списка
 };
+
+template<class V>
+istream &operator>>(istream &in, List<V> &list) {
+  V *a = new V;
+  in >> *a;
+  list.add(a);
+  delete a;
+  return in;
+}
+
+template<class V>
+ostream &operator<<(ostream &out, List<V> &list) {
+  Node<V> *tmp = list.head;
+  for (int i = 0; i < list.size; ++i) {
+    for (int j = 0; j < tmp->c_size; ++j) {
+      out << *(tmp->field[j]) << " ";
+    }
+    tmp = tmp->next;
+    out << "\n";
+  }
+  return out;
+}
 
 #endif //COURSEWORK_INCLUDE_LIST_H_

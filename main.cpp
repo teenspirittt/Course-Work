@@ -16,7 +16,7 @@ int main() {
   // f.open("../src/materials/data.bin", std::ios::binary | std::ios::out);
   // p.load_to_bin(f);
   // f.close();
-  List<std::string> a;
+  List<string> a;
   List<int> b;
   menu(a);
   return 0;
