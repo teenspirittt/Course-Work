@@ -6,32 +6,31 @@ void show_menu() {
                " [2] -Insert array-\n"
                " [3] -Remove array-\n"
                " [4] -Add element-\n"
-               " [5] -Remove element- b e t a\n"
-               " [6] -Sort- b e t a\n"
-               " [7] -Balance- b e t a\n"
-               " [8] -Load from file- b e t a\n"
-               " [9] -Load to file-\n"
-               "[10] -Show list-\n"
-               "[11] -Exit-\n"
+               " [5] -Insert element\n"
+               " [6] -Remove element- a l p h a\n"
+               " [7] -Sort-\n"
+               " [8] -Balance- b e t a\n"
+               " [9] -Load from file- b e t a\n"
+               "[10] -Load to file-\n"
+               "[11] -Show list-\n"
+               "[12] -Exit-\n"
                "-------------------------------\n";
 
 }
 
 void menu(List<string> &a) {
   unsigned int choice;
-  string str;
+  string *str;
   unsigned int num;
   bool flag = true;
   fstream f;
-  int heh;
+
   int *nums;
-  nums = &heh;
   while (flag) {
     show_menu();
     cin >> choice;
-    // fixme
     switch (choice) {
-      case 11:system("cls");
+      case 12:system("cls");
         flag = false;
         break;
       case 1:system("cls");
@@ -40,38 +39,53 @@ void menu(List<string> &a) {
       case 2:system("cls");
         cin >> num;
         a.insert_array(num);
+        system("cls");
         break;
       case 3:system("cls");
         cout << "Enter position:\n";
         cin >> num;
         a.remove(num);
+        system("cls");
         break;
       case 4:system("cls");
-        cin >> str;
-        a.add(&str);
+        cout << "Enter element:\n";
+        str = new string;
+        cin >> *str;
+        a.add(str);
+        system("cls");
         break;
       case 5:system("cls");
-        std::cout << "Enter position:\n";
+        cout << "Enter position:\n";
         cin >> num;
-        // a.remove_from_array(num);
+        cout << "Enter data:\n";
+        str = new string;
+        cin >> *str;
+        a.insert_in_array(str, num);
+        system("cls");
         break;
       case 6:system("cls");
-        //  a.sort();
+        std::cout << "Enter position:\n";
+        cin >> num;
+        a.remove_from_array(num);
+        system("cls");
         break;
       case 7:system("cls");
-        //  a.balance();
+        a.sort();
         break;
       case 8:system("cls");
-        f.open("../src/materials/data.bin", std::ios::binary | std::ios::in);
+        //  a.balance();
+        break;
+      case 9:system("cls");
+        f.open("../src/materials/data.bin", ios::binary | ios::in);
         a.load_from_bin(f);
         f.close();
         break;
-      case 9:system("cls");
-        f.open("../src/materials/data.bin", std::ios::binary | std::ios::out);
+      case 10:system("cls");
+        f.open("../src/materials/data.bin", ios::binary | ios::out);
         a.load_to_bin(f);
         f.close();
         break;
-      case 10:system("cls");
+      case 11:system("cls");
         cout << a;
         break;
       default:break;

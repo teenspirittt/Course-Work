@@ -6,7 +6,7 @@ Node<T>::Node(T *_field, unsigned int _length) {
   field = new T *[_length];
   next = nullptr;
   length = _length;
-  field[0] = new T(*_field);
+  field[0] = _field;
   c_size = 1;
 }
 
@@ -43,8 +43,22 @@ List<T>::~List() {
 }
 
 template<typename T>
-int List<T>::get_size() {
+int List<T>::get_list_size() {
   return size;
+}
+
+template<typename T>
+unsigned int List<T>::get_arr_size(unsigned int num) {
+  return get_node(num)->c_size;
+}
+
+template<typename T>
+Node<T> *List<T>::get_node(unsigned int num) {
+  Node<T> *tmp = head;
+  for (unsigned int i = 0; i < num && tmp; ++i) {
+    tmp = tmp->next;
+  }
+  return tmp;
 }
 
 template<typename T>
@@ -70,25 +84,32 @@ void List<T>::remove(unsigned int pos) {
 }
 
 template<typename T>
-void List<T>::add(T *_field) {
-  if (is_empty()) {
-    head = new Node<T>(_field, START_LENGTH);
-    size++;
-  } else {
-    Node<T> *tmp = head;
-    Node<T> *tmp2;
-    while (tmp != nullptr && tmp->c_size == tmp->length) {
-      tmp2 = tmp;
+void List<T>::remove_from_array(unsigned int pos) {
+  Node<T> *tmp;
+  unsigned int sz;
+  unsigned int arr_num = 0;
+  for (unsigned int i = 0; i < size && pos >= get_arr_size(i); ++i) {
+    pos -= get_arr_size(i);
+    arr_num++;
+  }
+  tmp = get_node(arr_num);
+  for (unsigned int i = arr_num; i < size; ++i) {
+    for (unsigned int j = pos; j < (tmp->c_size - 1) && (tmp->c_size != 0); ++j) {
+      tmp->field[j] = tmp->field[j + 1];
+      sz = j;
+    }
+    if ((pos == tmp->c_size - 1) && (tmp->next != nullptr)) {
+      sz = tmp->c_size - 1;
+      tmp->field[sz] = tmp->next->field[0];
+    }
+    if (sz < tmp->length && tmp->next != nullptr) {
+      tmp->field[sz + 1] = tmp->next->field[0];
       tmp = tmp->next;
     }
-    if (tmp == nullptr) {
-      tmp = new Node<T>(_field, tmp2->length * FACTOR);
-      tmp2->next = tmp;
-      size++;
-    } else {
-      tmp->field[tmp->c_size] = new T(*_field);
-      tmp->c_size++;
+    if (tmp->next == nullptr) {
+      tmp->c_size--;
     }
+    pos = 0;
   }
 }
 
@@ -103,6 +124,7 @@ void List<T>::add_array() {
     }
     tmp->next = new Node<T>(tmp->length * FACTOR);
   }
+  size++;
 }
 
 template<typename T>
@@ -127,26 +149,77 @@ void List<T>::insert_array(unsigned int pos) {
   size++;
 }
 
-/*template<typename T>
-void List<T>::insert_in_array(T *_field, unsigned int pos) {
-  Node<T> tmp =
-  if (pos == 0) {
-
+template<typename T>
+void List<T>::add(T *_field) {
+  if (is_empty()) {
+    head = new Node<T>(_field, START_LENGTH);
+    size++;
+  } else {
+    Node<T> *tmp = head;
+    Node<T> *tmp2;
+    while (tmp != nullptr && tmp->c_size == tmp->length) {
+      tmp2 = tmp;
+      tmp = tmp->next;
+    }
+    if (tmp == nullptr) {
+      tmp = new Node<T>(_field, tmp2->length * FACTOR);
+      tmp2->next = tmp;
+      size++;
+    } else {
+      tmp->field[tmp->c_size] = _field;
+      tmp->c_size++;
+    }
   }
-
-}*/
+}
 
 template<typename T>
-T *List<T>::get(unsigned int list_num, unsigned int arr_pos) {
-  if (is_empty()) {
-    // TODO
-    cout << "AAAAAAAAAAAAAAA!!!\n";
-  }
+void List<T>::insert_in_array(T *_field, unsigned int pos) {
   Node<T> *tmp = head;
-  for (int i = 0; i < list_num; ++i) {
-    tmp = tmp->next;
+  Node<T> *tmp2;
+  unsigned int arr_num = 0;
+  for (unsigned int i = 0; i < size && pos >= get_arr_size(i); ++i) {
+    pos -= get_arr_size(i);
+    arr_num++;
   }
-  return tmp->field[arr_pos];
+  if (get_arr_size(arr_num) == tmp->length) {
+    while (tmp != nullptr && tmp->c_size == tmp->length) {
+      tmp2 = tmp;
+      tmp = tmp->next;
+    }
+    if (tmp == nullptr) {
+      tmp = new Node<T>(tmp2->length * FACTOR);
+      tmp2->next = tmp;
+      size++;
+    }
+    tmp = get_node(arr_num);
+    if (tmp->c_size < tmp->length - 1) {
+      for (int i = tmp->c_size; i > pos; --i) {
+        tmp->field[i] = tmp->field[i - 1];
+      }
+      tmp->field[pos] = _field;
+    } else {
+      T *last_el = tmp->field[tmp->c_size - 1];
+      for (int i = tmp->c_size - 1; i > pos; --i) {
+        tmp->field[i] = tmp->field[i - 1];
+      }
+      tmp->field[pos] = _field;
+      tmp = tmp->next;
+      while (tmp->c_size == tmp->length) {
+        T *last_el2 = tmp->field[tmp->c_size - 1];
+        for (int i = tmp->c_size - 1; i > 0; --i) {
+          tmp->field[i] = tmp->field[i - 1];
+        }
+        tmp->field[0] = last_el;
+        last_el = last_el2;
+        tmp = tmp->next;
+      }
+      for (int i = tmp->c_size; i > 0; --i) {
+        tmp->field[i] = tmp->field[i - 1];
+      }
+      tmp->field[0] = last_el;
+      tmp->c_size++;
+    }
+  }
 }
 
 template<typename T>
@@ -211,19 +284,60 @@ void List<string>::load_from_bin(fstream &in) {
     head = tmp;
     size--;
   }
-  int sz;
+  unsigned int sz;
+  unsigned int el_sz;
   Node<string> *tmp;
-  while (in.peek() != EOF) {
+  if (in.peek() != EOF) {
     in.read((char *) &sz, sizeof(unsigned int));
     tmp = new Node<string>(sz);
+  }
+  while (in.peek() != EOF) {
     for (int i = 0; i < sz; ++i) {
-      tmp->field[i] = new string;
-      in.read((char *) &(tmp[i]), sizeof(unsigned int));
+      in.read((char *) &el_sz, sizeof(unsigned int));
+      char *el_tmp = new char[el_sz];
+      in.read(el_tmp, el_sz);
+      string *str = new string(el_tmp);
+      tmp->field[i] = str;
       tmp->c_size++;
     }
-    tmp->next = new Node<string>(tmp->length * FACTOR);
+    sz = 0;
+
+    in.read((char *) &sz, sizeof(unsigned int));
+    if (sz > 0) {
+      tmp->next = new Node<string>(sz);
+      tmp = tmp->next;
+      size++;
+    } else {
+      size++;
+    }
+  }
+
+}
+
+template<typename T>
+T *List<T>::get_elem(unsigned int list_num, unsigned int arr_pos) {
+  if (is_empty()) {
+    // TODO
+    cout << "AAAAAAAAAAAAAAA!!!\n";
+  }
+  Node<T> *tmp = head;
+  for (int i = 0; i < list_num; ++i) {
     tmp = tmp->next;
-    size++;
+  }
+  return tmp->field[arr_pos];
+}
+
+template<typename T>
+void List<T>::sort() {
+  Node<T> *tmp = head;
+  while (tmp) {
+    for (int i = 0; i < tmp->c_size - i - 1; ++i) {
+      for (int j = 0; j < tmp->c_size - 1; ++j) {
+        if (*(tmp->field[j]) > *(tmp->field[j + 1]))
+          swap(*(tmp->field[j]), *(tmp->field[j + 1]));
+      }
+    }
+    tmp = tmp->next;
   }
 }
 

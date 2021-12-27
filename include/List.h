@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-
+#include <cstring>
 using namespace std;
 
 #define START_LENGTH 2                                  // Начальная длина певрого массива
@@ -12,7 +12,7 @@ using namespace std;
 
 // TODO
 //// Поменять название переменных и функций
-//// Сделать insert_in_arr(), remove_from_arr(), sort(), balance(), load_from_bin()
+//// Сделать remove_from_arr(), sort(), balance(), load_from_bin()
 //// Сделать настройки меню(Русский язык, man, info)
 //// Сделать пару тестов
 
@@ -20,7 +20,7 @@ template<typename T>
 struct Node {
   T **field;
   Node *next;
-  unsigned int length;                          //максималььная  длина массива
+  unsigned int length;                          //максимальная  длина массива
   unsigned int c_size;                          // current длина массива
   explicit Node(unsigned int _length);
   Node(T *_field, unsigned int _length);
@@ -41,14 +41,14 @@ class List {
   void insert_array(unsigned int pos);                 // Вставка массива по позиции
   void remove(unsigned int pos);                        // Удаление массива полностью как ноду списка
   void remove_from_array(unsigned int pos);             // "Прицельное" удаление
-  int get_size();                                       // Вывод размера списка
+  int get_list_size();                                       // Вывод размера списка
   void sort();
   void balance();
   void load_from_bin(std::fstream &in);
   void load_to_bin(std::fstream &out);
-  T *get(unsigned int list_num, unsigned int arr_pos);
+  T *get_elem(unsigned int list_num, unsigned int arr_pos);
   // TODO
-  //Node<T> *operator[](const int d);
+  //T &operator[](const unsigned int num);
 
   template<class V>
   friend std::istream &operator>>(std::istream &in, List<V> &list);
@@ -59,6 +59,9 @@ class List {
   Node<T> *head;
   bool is_empty();
   unsigned int size;                                 // длина списка
+  unsigned int get_arr_size(unsigned int num);
+  Node<T> *get_node(unsigned int num);
+
 };
 
 template<class V>
