@@ -8,14 +8,13 @@ void show_menu() {
                " [4] -Add element-\n"
                " [5] -Insert element\n"
                " [6] -Remove element- a l p h a\n"
-               " [7] -Sort-\n"
+               " [7] -Sort- b e t a\n"
                " [8] -Balance- b e t a\n"
-               " [9] -Load from file- b e t a\n"
+               " [9] -Load from file-\n"
                "[10] -Load to file-\n"
                "[11] -Show list-\n"
                "[12] -Exit-\n"
                "-------------------------------\n";
-
 }
 
 void menu(List<string> &a) {

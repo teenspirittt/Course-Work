@@ -12,7 +12,7 @@ using namespace std;
 
 // TODO
 //// Поменять название переменных и функций
-//// Сделать remove_from_arr(), sort(), balance().
+//// Сделать sort(), balance().
 //// Сделать настройки меню(Русский язык, man, info)
 //// Сделать пару тестов
 
@@ -60,6 +60,7 @@ class List {
   bool is_empty();
   unsigned int size;                                 // длина списка
   unsigned int get_arr_size(unsigned int num);
+  unsigned int get_non_empty_nodes();
   Node<T> *get_node(unsigned int num);
 
 };
@@ -77,6 +78,7 @@ template<class V>
 ostream &operator<<(ostream &out, List<V> &list) {
   Node<V> *tmp = list.head;
   for (int i = 0; i < list.size; ++i) {
+    out << tmp->c_size << tmp->length << "| ";
     for (int j = 0; j < tmp->c_size; ++j) {
       out << *(tmp->field[j]) << " ";
     }

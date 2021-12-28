@@ -20,9 +20,6 @@ Node<T>::Node(unsigned int _length) {
 
 template<typename T>
 Node<T>::~Node() {
-  for (int i = 0; i < c_size; ++i) {
-    delete field[i];
-  }
   delete[] field;
 }
 
@@ -85,32 +82,37 @@ void List<T>::remove(unsigned int pos) {
 
 template<typename T>
 void List<T>::remove_from_array(unsigned int pos) {
-  Node<T> *tmp;
+  Node<T> *tmp = head;
   unsigned int sz;
   unsigned int arr_num = 0;
   for (unsigned int i = 0; i < size && pos >= get_arr_size(i); ++i) {
     pos -= get_arr_size(i);
     arr_num++;
   }
+  unsigned int node_count = get_non_empty_nodes();
+
   tmp = get_node(arr_num);
-  for (unsigned int i = arr_num; i < size; ++i) {
+  for (unsigned int i = arr_num; i < node_count; ++i) {
     for (unsigned int j = pos; j < (tmp->c_size - 1) && (tmp->c_size != 0); ++j) {
       tmp->field[j] = tmp->field[j + 1];
       sz = j;
     }
-    if ((pos == tmp->c_size - 1) && (tmp->next != nullptr)) {
-      sz = tmp->c_size - 1;
-      tmp->field[sz] = tmp->next->field[0];
-    }
-    if (sz < tmp->length && tmp->next != nullptr) {
+    if (pos == tmp->c_size - 1 && tmp->next != nullptr && tmp->next->c_size != 0) {
+      tmp->field[tmp->c_size - 1] = tmp->next->field[0];
+      tmp = tmp->next;
+    } else if (tmp != nullptr && sz < tmp->length && tmp->next != nullptr && tmp->next->c_size != 0) {
       tmp->field[sz + 1] = tmp->next->field[0];
       tmp = tmp->next;
     }
-    if (tmp->next == nullptr) {
+    if (i == node_count - 1) {
       tmp->c_size--;
+      if (tmp->c_size == 0) {
+        node_count--;
+      }
     }
     pos = 0;
   }
+
 }
 
 template<typename T>
@@ -180,45 +182,46 @@ void List<T>::insert_in_array(T *_field, unsigned int pos) {
   for (unsigned int i = 0; i < size && pos >= get_arr_size(i); ++i) {
     pos -= get_arr_size(i);
     arr_num++;
+    tmp = tmp->next;
   }
-  if (get_arr_size(arr_num) == tmp->length) {
-    while (tmp != nullptr && tmp->c_size == tmp->length) {
-      tmp2 = tmp;
-      tmp = tmp->next;
+
+  while (tmp != nullptr && tmp->c_size == tmp->length) {
+    tmp2 = tmp;
+    tmp = tmp->next;
+  }
+  if (tmp == nullptr) {
+    tmp = new Node<T>(tmp2->length * FACTOR);
+    tmp2->next = tmp;
+    size++;
+  }
+  tmp = get_node(arr_num);
+  if (tmp->c_size < tmp->length - 1) {
+    for (int i = tmp->c_size; i > pos; --i) {
+      tmp->field[i] = tmp->field[i - 1];
     }
-    if (tmp == nullptr) {
-      tmp = new Node<T>(tmp2->length * FACTOR);
-      tmp2->next = tmp;
-      size++;
+    tmp->field[pos] = _field;
+    tmp->c_size++; // minor fix
+  } else {
+    T *last_el = tmp->field[tmp->c_size - 1];
+    for (int i = tmp->c_size - 1; i > pos; --i) {
+      tmp->field[i] = tmp->field[i - 1];
     }
-    tmp = get_node(arr_num);
-    if (tmp->c_size < tmp->length - 1) {
-      for (int i = tmp->c_size; i > pos; --i) {
-        tmp->field[i] = tmp->field[i - 1];
-      }
-      tmp->field[pos] = _field;
-    } else {
-      T *last_el = tmp->field[tmp->c_size - 1];
-      for (int i = tmp->c_size - 1; i > pos; --i) {
-        tmp->field[i] = tmp->field[i - 1];
-      }
-      tmp->field[pos] = _field;
-      tmp = tmp->next;
-      while (tmp->c_size == tmp->length) {
-        T *last_el2 = tmp->field[tmp->c_size - 1];
-        for (int i = tmp->c_size - 1; i > 0; --i) {
-          tmp->field[i] = tmp->field[i - 1];
-        }
-        tmp->field[0] = last_el;
-        last_el = last_el2;
-        tmp = tmp->next;
-      }
-      for (int i = tmp->c_size; i > 0; --i) {
+    tmp->field[pos] = _field;
+    tmp = tmp->next;
+    while (tmp->c_size == tmp->length) {
+      T *last_el2 = tmp->field[tmp->c_size - 1];
+      for (int i = tmp->c_size - 1; i > 0; --i) {
         tmp->field[i] = tmp->field[i - 1];
       }
       tmp->field[0] = last_el;
-      tmp->c_size++;
+      last_el = last_el2;
+      tmp = tmp->next;
     }
+    for (int i = tmp->c_size; i > 0; --i) {
+      tmp->field[i] = tmp->field[i - 1];
+    }
+    tmp->field[0] = last_el;
+    tmp->c_size++;
   }
 }
 
@@ -252,6 +255,7 @@ void List<string>::load_to_bin(fstream &out) {
   }
 }
 
+//:todo do test
 template<typename T>
 void List<T>::load_from_bin(fstream &in) {
   while (size != 0) {
@@ -260,19 +264,31 @@ void List<T>::load_from_bin(fstream &in) {
     head = tmp;
     size--;
   }
-  int sz;
+  unsigned int sz = 0;
+  unsigned int el_sz = 0;
   Node<T> *tmp;
-  while (in.peek() != EOF) {
+  head = nullptr;
+  if (in.peek() != EOF) {
     in.read((char *) &sz, sizeof(unsigned int));
     tmp = new Node<T>(sz);
+    head = tmp;
+  }
+  while (in.peek() != EOF) {
     for (int i = 0; i < sz; ++i) {
-      tmp->field[i] = new T;
-      in.read((char *) &(tmp[i]), sizeof(unsigned int));
+      T *el_tmp = new T[el_sz];
+      in.read((char *) el_tmp, sizeof(T));
+      tmp->field[i] = el_tmp;
       tmp->c_size++;
     }
-    tmp->next = new Node<T>(tmp->length * FACTOR);
-    tmp = tmp->next;
-    size++;
+    sz = 0;
+    in.read((char *) &sz, sizeof(unsigned int));
+    if (sz > 0) {
+      tmp->next = new Node<T>(sz);
+      tmp = tmp->next;
+      size++;
+    } else {
+      size++;
+    }
   }
 }
 
@@ -291,8 +307,10 @@ void List<string>::load_from_bin(fstream &in) {
   if (in.peek() != EOF) {
     in.read((char *) &sz, sizeof(unsigned int));
     tmp = new Node<string>(sz);
+    tmp->length = FACTOR;
     head = tmp;
   }
+  int len = 2;
   while (in.peek() != EOF) {
     for (int i = 0; i < sz; ++i) {
       in.read((char *) &el_sz, sizeof(unsigned int));
@@ -307,6 +325,8 @@ void List<string>::load_from_bin(fstream &in) {
     if (sz > 0) {
       tmp->next = new Node<string>(sz);
       tmp = tmp->next;
+      len = len * FACTOR;
+      tmp->length = len;
       size++;
     } else {
       size++;
@@ -339,6 +359,18 @@ void List<T>::sort() {
     }
     tmp = tmp->next;
   }
+}
+
+template<typename T>
+unsigned int List<T>::get_non_empty_nodes() {
+  Node<T> *tmp = head;
+  unsigned int node_count = 0;
+  for (int i = 0; i < size; ++i) {
+    if (tmp->c_size > 0)
+      node_count++;
+    tmp = tmp->next;
+  }
+  return node_count;
 }
 
 template
