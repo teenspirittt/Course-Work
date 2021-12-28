@@ -243,7 +243,7 @@ void List<string>::load_to_bin(fstream &out) {
     for (int i = 0; i < size; ++i) {
       out.write((char *) &(tmp->c_size), sizeof(unsigned int));
       for (int j = 0; j < tmp->c_size; ++j) {
-        unsigned int sz = tmp->field[j]->length();
+        unsigned int sz = tmp->field[j]->length() + 1;
         out.write((char *) &sz, sizeof(unsigned int));
         out.write((char *) tmp->field[j]->c_str(), sizeof(char) * sz);
       }
@@ -284,12 +284,14 @@ void List<string>::load_from_bin(fstream &in) {
     head = tmp;
     size--;
   }
-  unsigned int sz;
-  unsigned int el_sz;
+  unsigned int sz = 0;
+  unsigned int el_sz = 0;
   Node<string> *tmp;
+  head = nullptr;
   if (in.peek() != EOF) {
     in.read((char *) &sz, sizeof(unsigned int));
     tmp = new Node<string>(sz);
+    head = tmp;
   }
   while (in.peek() != EOF) {
     for (int i = 0; i < sz; ++i) {
@@ -301,7 +303,6 @@ void List<string>::load_from_bin(fstream &in) {
       tmp->c_size++;
     }
     sz = 0;
-
     in.read((char *) &sz, sizeof(unsigned int));
     if (sz > 0) {
       tmp->next = new Node<string>(sz);
@@ -311,7 +312,6 @@ void List<string>::load_from_bin(fstream &in) {
       size++;
     }
   }
-
 }
 
 template<typename T>

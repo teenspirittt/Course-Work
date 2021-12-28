@@ -12,7 +12,7 @@ using namespace std;
 
 // TODO
 //// Поменять название переменных и функций
-//// Сделать remove_from_arr(), sort(), balance(), load_from_bin()
+//// Сделать remove_from_arr(), sort(), balance().
 //// Сделать настройки меню(Русский язык, man, info)
 //// Сделать пару тестов
 
