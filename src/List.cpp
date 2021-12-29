@@ -1,4 +1,3 @@
-
 #include "../include/List.h"
 
 template<typename T>
@@ -349,15 +348,35 @@ T *List<T>::get_elem(unsigned int list_num, unsigned int arr_pos) {
 
 template<typename T>
 void List<T>::sort() {
-  Node<T> *tmp = head;
-  while (tmp) {
-    for (int i = 0; i < tmp->c_size - i - 1; ++i) {
-      for (int j = 0; j < tmp->c_size - 1; ++j) {
-        if (*(tmp->field[j]) > *(tmp->field[j + 1]))
-          swap(*(tmp->field[j]), *(tmp->field[j + 1]));
+  for (int i = 0; i < get_elem_count(); ++i) {
+    unsigned int min_i = i;
+    unsigned int min_n = 0;
+    unsigned int cur_i = i;
+    unsigned int cur_n = 0;
+    for (int j = 0; j < size && cur_i >= get_arr_length(j); ++j, ++cur_n)
+      cur_i -= get_arr_length(j);
+    for (int j = 0; j < size && min_i >= get_arr_size(j); ++j, ++min_n)
+      min_i -= get_arr_size(j);
+    for (unsigned int j = min_i; j < get_arr_size(min_n); ++j) {
+      if ((*get_elem(min_n, j)) < (*get_elem(min_n, min_i))) {
+        min_i = j;
       }
     }
-    tmp = tmp->next;
+    for (unsigned int j = min_n + 1; j < size; ++j) {
+      for (unsigned int k = 0; k < get_arr_size(j); ++k) {
+        if ((*get_elem(j, k)) < (*get_elem(min_n, min_i))) {
+          min_i = k;
+          min_n = j;
+        }
+      }
+    }
+    if (get_arr_size(cur_n) > cur_i) {
+      swap((*get_node(cur_n)->field[cur_i]), (*get_node(min_n)->field[min_i]));
+    } else {
+      (*get_node(cur_n)->field[cur_i]) = (*get_node(min_n)->field[min_i]);
+      get_node(min_n)->c_size--;
+      get_node(cur_n)->c_size++;
+    }
   }
 }
 
@@ -371,6 +390,22 @@ unsigned int List<T>::get_non_empty_nodes() {
     tmp = tmp->next;
   }
   return node_count;
+}
+
+template<typename T>
+unsigned int List<T>::get_elem_count() {
+  Node<T> *tmp = head;
+  unsigned int count = 0;
+  for (int i = 0; i < size; ++i) {
+    if (tmp->c_size > 0)
+      count = count + tmp->c_size;
+    tmp = tmp->next;
+  }
+  return count;
+}
+template<typename T>
+unsigned int List<T>::get_arr_length(unsigned int num) {
+  return get_node(num)->length;
 }
 
 template

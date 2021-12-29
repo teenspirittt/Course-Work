@@ -12,7 +12,7 @@ using namespace std;
 
 // TODO
 //// Поменять название переменных и функций
-//// Сделать sort(), balance().
+//// Сделать balance().
 //// Сделать настройки меню(Русский язык, man, info)
 //// Сделать пару тестов
 
@@ -60,7 +60,10 @@ class List {
   bool is_empty();
   unsigned int size;                                 // длина списка
   unsigned int get_arr_size(unsigned int num);
+  unsigned int get_arr_length(unsigned int num);
   unsigned int get_non_empty_nodes();
+  unsigned int get_elem_count();
+
   Node<T> *get_node(unsigned int num);
 
 };
