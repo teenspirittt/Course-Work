@@ -3,7 +3,6 @@
 #include "./include/menu.h"
 
 int main() {
-
   List<string> a;
   List<int> b;
   menu(a);
